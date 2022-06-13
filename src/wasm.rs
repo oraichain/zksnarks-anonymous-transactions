@@ -47,20 +47,17 @@ impl RLNWasm {
 
     #[wasm_bindgen]
     pub fn generate_proof(&self, input: &[u8]) -> Result<Vec<u8>, JsValue> {
-        let proof = match self.api.generate_proof(input) {
-            Ok(proof) => proof,
+        let mut proof: Vec<u8> = Vec::new();
+        let proof = match self.api.generate_proof(input, &mut proof) {
+            Ok(()) => proof,
             Err(e) => return Err(e.to_string().into()),
         };
         Ok(proof)
     }
 
     #[wasm_bindgen]
-    pub fn verify(
-        &self,
-        uncompresed_proof: &[u8],
-        raw_public_inputs: &[u8],
-    ) -> Result<bool, JsValue> {
-        let success = match self.api.verify(uncompresed_proof, raw_public_inputs) {
+    pub fn verify(&self, uncompresed_proof: &[u8]) -> Result<bool, JsValue> {
+        let success = match self.api.verify(uncompresed_proof) {
             Ok(success) => success,
             Err(e) => return Err(e.to_string().into()),
         };
@@ -122,11 +119,6 @@ mod test {
         let mut raw_public_inputs: Vec<u8> = Vec::new();
         inputs.write_public_inputs(&mut raw_public_inputs);
 
-        assert_eq!(
-            rln_wasm
-                .verify(proof.as_slice(), raw_public_inputs.as_slice())
-                .unwrap(),
-            true
-        );
+        assert_eq!(rln_wasm.verify(proof.as_slice()).unwrap(), true);
     }
 }

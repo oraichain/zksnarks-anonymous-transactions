@@ -21,7 +21,7 @@ cargo run --release --example export_test_keys
 ### Build
 
 ```
-wasm-pack build --release --target=nodejs --scope=rln --out-name=$PACKAGE --out-dir=$PACKAGE_DIR -- --features wasm
+wasm-pack build --release --target=nodejs --scope=rln --out-name=rln --out-dir=dist -- --features wasm
 ```
 
 ### Test
